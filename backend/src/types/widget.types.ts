@@ -42,3 +42,14 @@ export interface ChatMessage {
   timestamp: Date;
   sessionId?: string;
 }
+
+// Adicionar ao final do arquivo existente
+export interface AudioConfig {
+  enabled: boolean;
+  maxDuration: number; // segundos
+  autoSend: boolean;
+  format: 'webm' | 'mp3';
+}
+
+// Adicionar na interface WidgetConfig.recursos
+// audioRecording?: AudioConfig;
