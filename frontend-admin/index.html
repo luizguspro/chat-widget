@@ -1,188 +1,826 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Configurador de Chat Widget</title>
-  <link rel="stylesheet" href="css/admin.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Widget Creator - Configure seu Chat Inteligente</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --light: #f1f5f9;
+            --white: #ffffff;
+            --shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 40px 30px;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 50px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .steps {
+            list-style: none;
+        }
+
+        .step {
+            position: relative;
+            padding: 20px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .step:hover {
+            background: var(--light);
+        }
+
+        .step.active {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border-color: var(--primary);
+        }
+
+        .step.completed {
+            opacity: 0.7;
+        }
+
+        .step-number {
+            width: 36px;
+            height: 36px;
+            background: var(--light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .step.active .step-number {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+
+        .step-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .step-description {
+            font-size: 14px;
+            color: var(--gray);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .content-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .step-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-header {
+            margin-bottom: 40px;
+        }
+
+        .step-title-main {
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .step-subtitle {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--light);
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .color-picker-group {
+            display: flex;
+            gap: 20px;
+        }
+
+        .color-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .image-upload {
+            border: 2px dashed var(--light);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .image-upload:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .toggle-switch {
+            width: 50px;
+            height: 26px;
+            background: var(--light);
+            border-radius: 26px;
+            position: relative;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: var(--primary);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: white;
+            top: 3px;
+            left: 3px;
+            transition: 0.3s;
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(24px);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid var(--light);
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray);
+            color: white;
+        }
+
+        .success-screen {
+            text-align: center;
+            padding: 60px;
+        }
+
+        .success-icon {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            font-size: 60px;
+            color: white;
+            animation: scaleIn 0.5s ease;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .code-block {
+            background: var(--dark);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: left;
+            font-family: monospace;
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>Configurador de Chat Widget</h1>
-      <p>Configure seu chat integrado com Dialogflow CX</p>
-    </header>
-    
-    <div class="content">
-      <!-- Coluna Esquerda - Configurador -->
-      <div class="configurador">
-        <form id="formWidget">
-          <section class="secao">
-            <h2>Identificação</h2>
-            <div class="campo">
-              <label for="cliente">Nome do Cliente</label>
-              <input type="text" id="cliente" required>
+    <div class="app-container">
+        <!-- Sidebar com Steps -->
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">💬</div>
+                <div class="logo-text">Widget Creator</div>
             </div>
-            <div class="campo">
-              <label for="dominio">Domínio Autorizado</label>
-              <input type="text" id="dominio" placeholder="exemplo.com.br" required>
-            </div>
-          </section>
-          
-          <section class="secao">
-            <h2>Perfil do Assistente</h2>
-            <div class="campo">
-              <label for="nomeBotVisivel">Nome do Assistente</label>
-              <input type="text" id="nomeBotVisivel" placeholder="Assistente Virtual" value="Assistente">
-            </div>
-            <div class="campo">
-              <label for="imagemPerfil">Avatar do Assistente</label>
-              <div class="upload-area">
-                <input type="file" id="imagemPerfil" accept="image/*" style="display:none;">
-                <div class="upload-preview" id="uploadPreview">
-                  <img id="previewImg" style="display:none;">
-                  <div id="uploadPlaceholder">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
-                    </svg>
-                    <p>Clique para adicionar</p>
-                    <small>Recomendado: 100x100px</small>
-                  </div>
-                </div>
-                <button type="button" id="btnUpload" class="btn-upload">Escolher Imagem</button>
-                <button type="button" id="btnRemover" class="btn-remover" style="display:none;">Remover</button>
-              </div>
-            </div>
-          </section>
-          
-          <section class="secao">
-            <h2>Dialogflow</h2>
-            <div class="campo">
-              <label for="agentId">Agent ID</label>
-              <input type="text" id="agentId" required>
-            </div>
-            <div class="campo">
-              <label for="projectId">Project ID</label>
-              <input type="text" id="projectId" required>
-            </div>
-            <div class="campo">
-              <label for="location">Região</label>
-              <select id="location" required>
-                <option value="southamerica-east1">São Paulo (southamerica-east1)</option>
-                <option value="us-central1">US Central</option>
-                <option value="europe-west1">Europa</option>
-              </select>
-            </div>
-          </section>
-          
-          <section class="secao">
-            <h2>Visual</h2>
-            <div class="grupo-campos">
-              <div class="campo">
-                <label for="corPrimaria">Cor Principal</label>
-                <input type="color" id="corPrimaria" value="#2c3e50">
-              </div>
-              <div class="campo">
-                <label for="corSecundaria">Cor de Fundo</label>
-                <input type="color" id="corSecundaria" value="#f7f8fc">
-              </div>
-            </div>
-            <div class="campo">
-              <label for="posicao">Posição</label>
-              <select id="posicao">
-                <option value="bottom-right">Inferior Direita</option>
-                <option value="bottom-left">Inferior Esquerda</option>
-              </select>
-            </div>
-            <div class="grupo-campos">
-              <div class="campo">
-                <label for="largura">Largura (px)</label>
-                <input type="number" id="largura" value="380" min="300" max="500">
-              </div>
-              <div class="campo">
-                <label for="altura">Altura (px)</label>
-                <input type="number" id="altura" value="600" min="400" max="700">
-              </div>
-            </div>
-          </section>
-          
-          <section class="secao">
-            <h2>Mensagens</h2>
-            <div class="campo">
-              <label for="boasVindas">Mensagem de Boas-vindas</label>
-              <textarea id="boasVindas" rows="2">Olá! Como posso ajudar você hoje?</textarea>
-            </div>
-            <div class="campo">
-              <label for="placeholder">Placeholder do Input</label>
-              <input type="text" id="placeholder" value="Digite sua mensagem...">
-            </div>
-            <div class="campo">
-              <label for="offline">Mensagem Offline</label>
-              <input type="text" id="offline" value="No momento estamos offline">
-            </div>
-          </section>
-          
-          <section class="secao">
-            <h2>Recursos</h2>
-            <div class="campo-checkbox">
-              <input type="checkbox" id="upload" checked>
-              <label for="upload">Habilitar envio de arquivos no chat</label>
-            </div>
-            <div class="campo-checkbox">
-              <input type="checkbox" id="som" checked>
-              <label for="som">Sons de notificação</label>
-            </div>
-            <div class="campo-checkbox">
-              <input type="checkbox" id="historico" checked>
-              <label for="historico">Manter histórico</label>
-            </div>
-            <div class="campo-checkbox">
-              <input type="checkbox" id="mostrarRefresh" checked>
-              <label for="mostrarRefresh">Mostrar botão de refresh</label>
-            </div>
-            <div class="campo">
-              <label>Botões Rápidos (um por linha)</label>
-              <textarea id="botoesRapidos" rows="3">Ajuda
-Falar com atendente
-Informações</textarea>
-            </div>
-          </section>
-          
-          <!-- Hidden inputs para manter compatibilidade -->
-          <input type="hidden" id="timeoutHabilitado" value="false">
-          <input type="hidden" id="timeoutMinutos" value="30">
-          <input type="hidden" id="timeoutAviso" value="">
-          <input type="hidden" id="timeoutReinicio" value="">
-          
-          <button type="submit" class="btn-gerar">Gerar Widget</button>
-        </form>
-      </div>
-      
-      <!-- Coluna Direita - Preview STICKY -->
-      <div class="preview-container">
-        <div class="preview-wrapper">
-          <h2>Preview <span class="sticky-badge" id="stickyBadge">Fixado</span></h2>
-          <div id="preview">
-            <iframe src="about:blank" id="previewFrame"></iframe>
-          </div>
-          
-          <div id="codigoEmbed" class="codigo-embed" style="display:none;">
-            <h3>Código para Instalação</h3>
-            <pre><code id="codigo"></code></pre>
-            <button class="btn-copiar" onclick="copiarCodigo()">Copiar Código</button>
-          </div>
+
+            <ul class="steps" id="stepsList">
+                <!-- Steps serão inseridos via JS -->
+            </ul>
         </div>
-      </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="content-wrapper" id="contentArea">
+                <!-- Conteúdo será inserido via JS -->
+            </div>
+        </div>
     </div>
-  </div>
-  
-  <script src="js/api.js"></script>
-  <script src="js/configurador.js"></script>
-  <script src="js/preview.js"></script>
-  <script src="js/upload.js"></script>
-  <script src="js/realtime-preview.js"></script>
-  <script src="js/better-experience.js"></script>
-  <script src="js/enhancements.js"></script>
-  <script src="js/preview-live.js"></script>
+
+    <!-- Scripts no final do body -->
+    <script src="js/api.js"></script>
+    <script src="js/configurador.js"></script>
+    <script src="js/upload.js"></script>
+    
+    <script>
+        // Script inline para o wizard
+        let currentStep = 1;
+        let totalSteps = 6;
+        let widgetData = {};
+
+        // Dados dos steps
+        const stepsData = [
+            { number: 1, title: 'Identificação', description: 'Informações básicas' },
+            { number: 2, title: 'Assistente', description: 'Personalize seu bot' },
+            { number: 3, title: 'Dialogflow', description: 'Integração com IA' },
+            { number: 4, title: 'Visual', description: 'Aparência do chat' },
+            { number: 5, title: 'Mensagens', description: 'Textos e respostas' },
+            { number: 6, title: 'Recursos', description: 'Funcionalidades extras' }
+        ];
+
+        // Inicializar
+        function init() {
+            renderSteps();
+            renderContent(1);
+        }
+
+        // Renderizar steps na sidebar
+        function renderSteps() {
+            const stepsList = document.getElementById('stepsList');
+            stepsList.innerHTML = stepsData.map((step, index) => {
+                const isActive = index === 0 ? 'active' : '';
+                return createStepHTML(step, isActive);
+            }).join('');
+
+            // Adicionar eventos de clique
+            document.querySelectorAll('.step').forEach(step => {
+                step.addEventListener('click', function() {
+                    const stepNum = parseInt(this.dataset.step);
+                    if (stepNum <= currentStep) {
+                        renderContent(stepNum);
+                    }
+                });
+            });
+        }
+
+        // Criar HTML do step
+        function createStepHTML(step, activeClass) {
+            return `
+                <li class="step ${activeClass}" data-step="${step.number}">
+                    <div class="step-number">${step.number}</div>
+                    <div class="step-title">${step.title}</div>
+                    <div class="step-description">${step.description}</div>
+                </li>
+            `;
+        }
+
+        // Renderizar conteúdo do step
+        function renderContent(stepNumber) {
+            const contentArea = document.getElementById('contentArea');
+            currentStep = stepNumber;
+            
+            // Atualizar classes dos steps
+            document.querySelectorAll('.step').forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index + 1 < stepNumber) {
+                    step.classList.add('completed');
+                } else if (index + 1 === stepNumber) {
+                    step.classList.add('active');
+                }
+            });
+
+            // Renderizar conteúdo baseado no step
+            let content = '';
+            
+            switch(stepNumber) {
+                case 1:
+                    content = getStep1Content();
+                    break;
+                case 2:
+                    content = getStep2Content();
+                    break;
+                case 3:
+                    content = getStep3Content();
+                    break;
+                case 4:
+                    content = getStep4Content();
+                    break;
+                case 5:
+                    content = getStep5Content();
+                    break;
+                case 6:
+                    content = getStep6Content();
+                    break;
+            }
+            
+            contentArea.innerHTML = content;
+            
+            // Reativar eventos depois de renderizar
+            attachEvents(stepNumber);
+        }
+
+        // Conteúdo de cada step
+        function getStep1Content() {
+            return `
+                <div class="step-header">
+                    <h1 class="step-title-main">Vamos começar!</h1>
+                    <p class="step-subtitle">Primeiro, algumas informações básicas</p>
+                </div>
+                <div class="card">
+                    <div class="form-group">
+                        <label for="cliente">Nome do Cliente</label>
+                        <input type="text" id="cliente" placeholder="Ex: Empresa XYZ" value="${widgetData.cliente || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label for="dominio">Domínio Autorizado</label>
+                        <input type="text" id="dominio" placeholder="Ex: exemplo.com.br" value="${widgetData.dominio || ''}">
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="nextStep()">Próximo →</button>
+                </div>
+            `;
+        }
+
+        function getStep2Content() {
+            return `
+                <div class="step-header">
+                    <h1 class="step-title-main">Personalize seu Assistente</h1>
+                    <p class="step-subtitle">Dê uma identidade ao seu bot</p>
+                </div>
+                <div class="card">
+                    <div class="form-group">
+                        <label for="nomeBotVisivel">Nome do Assistente</label>
+                        <input type="text" id="nomeBotVisivel" placeholder="Ex: Assistente Virtual" value="${widgetData.nomeBotVisivel || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label>Avatar</label>
+                        <div class="image-upload" onclick="document.getElementById('imagemPerfil').click()">
+                            <input type="file" id="imagemPerfil" accept="image/*" hidden onchange="handleImageUpload(this)">
+                            <div id="imagePreview">
+                                ${widgetData.imagemPerfil ? 
+                                    '<img src="' + widgetData.imagemPerfil + '" style="max-width: 150px; border-radius: 8px;">' : 
+                                    '<div>📷 Clique para enviar imagem</div>'
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="prevStep()">← Anterior</button>
+                    <button class="btn btn-primary" onclick="nextStep()">Próximo →</button>
+                </div>
+            `;
+        }
+
+        function getStep3Content() {
+            return `
+                <div class="step-header">
+                    <h1 class="step-title-main">Integração Dialogflow</h1>
+                    <p class="step-subtitle">Configure a conexão com IA</p>
+                </div>
+                <div class="card">
+                    <div class="form-group">
+                        <label for="projectId">Project ID</label>
+                        <input type="text" id="projectId" placeholder="Ex: meu-projeto" value="${widgetData.projectId || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label for="agentId">Agent ID</label>
+                        <input type="text" id="agentId" placeholder="Ex: 79aa4648..." value="${widgetData.agentId || ''}">
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Região</label>
+                        <select id="location">
+                            <option value="global">Global</option>
+                            <option value="us-central1">US Central</option>
+                            <option value="us-east1">US East</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="prevStep()">← Anterior</button>
+                    <button class="btn btn-primary" onclick="nextStep()">Próximo →</button>
+                </div>
+            `;
+        }
+
+        function getStep4Content() {
+            return `
+                <div class="step-header">
+                    <h1 class="step-title-main">Visual do Chat</h1>
+                    <p class="step-subtitle">Customize as cores</p>
+                </div>
+                <div class="card">
+                    <div class="form-group">
+                        <div class="color-picker-group">
+                            <div>
+                                <label>Cor Primária</label>
+                                <input type="color" id="corPrimaria" value="${widgetData.corPrimaria || '#6366f1'}">
+                                <div class="color-preview" style="background: ${widgetData.corPrimaria || '#6366f1'}" 
+                                     onclick="document.getElementById('corPrimaria').click()"></div>
+                            </div>
+                            <div>
+                                <label>Cor Secundária</label>
+                                <input type="color" id="corSecundaria" value="${widgetData.corSecundaria || '#8b5cf6'}">
+                                <div class="color-preview" style="background: ${widgetData.corSecundaria || '#8b5cf6'}"
+                                     onclick="document.getElementById('corSecundaria').click()"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="posicao">Posição</label>
+                        <select id="posicao">
+                            <option value="right">Inferior Direita</option>
+                            <option value="left">Inferior Esquerda</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="prevStep()">← Anterior</button>
+                    <button class="btn btn-primary" onclick="nextStep()">Próximo →</button>
+                </div>
+            `;
+        }
+
+        function getStep5Content() {
+            return `
+                <div class="step-header">
+                    <h1 class="step-title-main">Mensagens</h1>
+                    <p class="step-subtitle">Personalize os textos</p>
+                </div>
+                <div class="card">
+                    <div class="form-group">
+                        <label for="boasVindas">Mensagem de Boas-vindas</label>
+                        <textarea id="boasVindas" placeholder="Ex: Olá! Como posso ajudar?">${widgetData.boasVindas || 'Olá! Como posso ajudar você hoje?'}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="placeholder">Placeholder</label>
+                        <input type="text" id="placeholder" value="${widgetData.placeholder || 'Digite sua mensagem...'}">
+                    </div>
+                    <div class="form-group">
+                        <label for="botoesRapidos">Botões Rápidos (um por linha)</label>
+                        <textarea id="botoesRapidos">${widgetData.botoesRapidos || 'Ajuda\nFalar com atendente\nInformações'}</textarea>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="prevStep()">← Anterior</button>
+                    <button class="btn btn-primary" onclick="nextStep()">Próximo →</button>
+                </div>
+            `;
+        }
+
+        function getStep6Content() {
+            return `
+                <div class="step-header">
+                    <h1 class="step-title-main">Recursos</h1>
+                    <p class="step-subtitle">Funcionalidades extras</p>
+                </div>
+                <div class="card">
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="upload" checked> Permitir upload de arquivos
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="som" checked> Sons de notificação
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="historico" checked> Manter histórico
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="mostrarRefresh" checked> Botão de limpar conversa
+                        </label>
+                    </div>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="prevStep()">← Anterior</button>
+                    <button class="btn btn-primary" onclick="finalizarWidget()">Gerar Widget</button>
+                </div>
+            `;
+        }
+
+        // Funções de navegação
+        window.nextStep = function() {
+            saveCurrentStep();
+            if (currentStep < totalSteps) {
+                renderContent(currentStep + 1);
+            }
+        }
+
+        window.prevStep = function() {
+            saveCurrentStep();
+            if (currentStep > 1) {
+                renderContent(currentStep - 1);
+            }
+        }
+
+        // Salvar dados do step atual
+        function saveCurrentStep() {
+            switch(currentStep) {
+                case 1:
+                    widgetData.cliente = document.getElementById('cliente')?.value || '';
+                    widgetData.dominio = document.getElementById('dominio')?.value || '';
+                    break;
+                case 2:
+                    widgetData.nomeBotVisivel = document.getElementById('nomeBotVisivel')?.value || '';
+                    break;
+                case 3:
+                    widgetData.projectId = document.getElementById('projectId')?.value || '';
+                    widgetData.agentId = document.getElementById('agentId')?.value || '';
+                    widgetData.location = document.getElementById('location')?.value || '';
+                    break;
+                case 4:
+                    widgetData.corPrimaria = document.getElementById('corPrimaria')?.value || '';
+                    widgetData.corSecundaria = document.getElementById('corSecundaria')?.value || '';
+                    widgetData.posicao = document.getElementById('posicao')?.value || '';
+                    break;
+                case 5:
+                    widgetData.boasVindas = document.getElementById('boasVindas')?.value || '';
+                    widgetData.placeholder = document.getElementById('placeholder')?.value || '';
+                    widgetData.botoesRapidos = document.getElementById('botoesRapidos')?.value || '';
+                    break;
+                case 6:
+                    widgetData.upload = document.getElementById('upload')?.checked || false;
+                    widgetData.som = document.getElementById('som')?.checked || false;
+                    widgetData.historico = document.getElementById('historico')?.checked || false;
+                    widgetData.mostrarRefresh = document.getElementById('mostrarRefresh')?.checked || false;
+                    break;
+            }
+        }
+
+        // Upload de imagem
+        window.handleImageUpload = function(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    widgetData.imagemPerfil = e.target.result;
+                    document.getElementById('imagePreview').innerHTML = 
+                        '<img src="' + e.target.result + '" style="max-width: 150px; border-radius: 8px;">';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Finalizar widget
+        window.finalizarWidget = async function() {
+            saveCurrentStep();
+            
+            // Preparar dados
+            const dados = {
+                cliente: widgetData.cliente,
+                dominioAutorizado: widgetData.dominio,
+                dialogflow: {
+                    agentId: widgetData.agentId,
+                    projectId: widgetData.projectId,
+                    location: widgetData.location
+                },
+                visual: {
+                    corPrimaria: widgetData.corPrimaria,
+                    corSecundaria: widgetData.corSecundaria,
+                    posicao: widgetData.posicao || 'right',
+                    largura: 380,
+                    altura: 600,
+                    imagemPerfil: widgetData.imagemPerfil,
+                    nomeBotVisivel: widgetData.nomeBotVisivel
+                },
+                mensagens: {
+                    boasVindas: widgetData.boasVindas,
+                    placeholder: widgetData.placeholder,
+                    offline: 'No momento estamos offline'
+                },
+                recursos: {
+                    upload: widgetData.upload,
+                    botoesRapidos: widgetData.botoesRapidos.split('\n').filter(b => b.trim()),
+                    som: widgetData.som,
+                    historico: widgetData.historico,
+                    mostrarRefresh: widgetData.mostrarRefresh
+                }
+            };
+
+            try {
+                const response = await fetch('/api/widgets/criar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+
+                const resultado = await response.json();
+                
+                if (resultado.sucesso) {
+                    showSuccess(resultado.widget.widgetId);
+                }
+            } catch (erro) {
+                console.error('Erro:', erro);
+                alert('Erro ao criar widget');
+            }
+        }
+
+        // Mostrar sucesso
+        function showSuccess(widgetId) {
+            const content = `
+                <div class="success-screen">
+                    <div class="success-icon">✓</div>
+                    <h1>Widget Criado com Sucesso!</h1>
+                    <p>Copie o código abaixo e cole no seu site:</p>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copiarCodigo()">Copiar</button>
+                        <pre id="codigo">&lt;script src="http://localhost:3000/widget/widget.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  ChatWidget.inicializar({
+    widgetId: '${widgetId}'
+  });
+&lt;/script&gt;</pre>
+                    </div>
+                    <button class="btn btn-primary" onclick="location.reload()">Criar Novo Widget</button>
+                </div>
+            `;
+            document.getElementById('contentArea').innerHTML = content;
+        }
+
+        // Copiar código
+        window.copiarCodigo = function() {
+            const codigo = document.getElementById('codigo').textContent;
+            navigator.clipboard.writeText(codigo).then(() => {
+                alert('Código copiado!');
+            });
+        }
+
+        // Attach eventos após renderizar
+        function attachEvents(stepNumber) {
+            // Adicionar eventos específicos de cada step se necessário
+        }
+
+        // Inicializar ao carregar
+        init();
+    </script>
 </body>
 </html>
